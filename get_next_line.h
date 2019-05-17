@@ -1,26 +1,23 @@
 /*
 ** EPITECH PROJECT, 2019
-** GetNextLine.
+** Get_Next_Line
 ** File description:
-** Header for GNL.
+** Re-Write the getnextline fct.
 */
 
-#ifndef _GET_NEXT_LINE_H_
-#define _GET_NEXT_LINE_H_
+#ifndef __GET_NEXT_LINE_H__
+#define __GET_NEXT_LINE_H__
 
-#include <unistd.h>
 #include <stdlib.h>
-#include <stdio.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 #include <stddef.h>
-#include <stdbool.h>
+#include <stdio.h>
+#include <unistd.h>
 
-#ifndef _READ_SIZE_
-#define READ_SIZE 40
-#endif /* _READ_SIZE_ */
+#ifndef __READ_SIZE__
+#define __READ_SIZE__
+#define READ_SIZE (20)
+#endif
 
 char *get_next_line(int fd);
-
-#endif /* _GET_NEXT_LINE_H_ */
+char *my_strcat(char **static_temp, char *buffer, int size);
+#endif
