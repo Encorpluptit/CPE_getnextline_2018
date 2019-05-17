@@ -1,85 +1,72 @@
 /*
 ** EPITECH PROJECT, 2019
-** GetNextLine.
+** Get_Next_Line
 ** File description:
-** merde.
+** Re-Write getnextline fct.
 */
 
 #include "get_next_line.h"
 
-static char *my_realloc(char *ptr, size_t size)
+char *my_strcat(char **static_temp, char *buffer, int size)
 {
-    char *new = NULL;
-    char *pnew;
+    char *result;
+    int i = 0;
 
-    if (ptr == NULL)
-        return malloc(size);
-    if (size == 0) {
-        free(ptr);
+    if (*static_temp == NULL)
+        return (buffer);
+    for (; (*static_temp)[i] && (*static_temp)[i] != '\n'; ++i);
+    if ((result = malloc(sizeof(char) * (size + i + 1))) == NULL)
         return NULL;
-    }
-    new = malloc(size);
-    if (new == NULL)
-        return NULL;
-    pnew = new;
-    for (; size && *ptr; size = size -1)
-        *(pnew++) = *(ptr++);
-    return new;
+    for (i = 0; (*static_temp)[i] && (*static_temp)[i] != '\n'; ++i)
+        result[i] = (*static_temp)[i];
+    for (; *buffer && *buffer != '\n'; ++i)
+        result[i] = *buffer++;
+    return (result);
 }
 
-static int strcat_to(char **line, char **buffer)
+char *get_str(char *buffer)
 {
-    char *buff_end = *buffer;
-    char *line_cpy = *line;
-    size_t i = 0;
+    static char *static_temp;
+    char *result;
+    int i = 0;
+    static int count = 0;
 
-    for (; *buff_end != '\n' && *buff_end; buff_end = buff_end + 1);
-    if (*line != NULL)
-        for (; *(line_cpy + i); i = i + 1);
-    *line = my_realloc(*line, (i + (buff_end - *buffer) + 1) * sizeof(char));
-    if (*line == NULL)
-        return -1;
-    line_cpy = *line;
-    for (; *buffer != buff_end; *buffer = *buffer + 1)
-        *(line_cpy++ + i) = **buffer;
-    *(line_cpy + i) = '\0';
-    *buffer += *buff_end == '\n' ? 1 : 0;
-    return *buff_end == '\n' ? 1 : 0;
-}
-
-static int init_gnl(char **buffer, char **line)
-{
-    if (*buffer == NULL || **buffer == '\0') {
-        *buffer = malloc((READ_SIZE + 1) * sizeof(char));
-        if (*buffer == NULL)
-            return -1;
-        return 0;
+    if (count == 0) {
+        if ((static_temp = malloc(sizeof(char) * (READ_SIZE + 1))) == NULL)
+            return (NULL);
+        count = 1;
     }
-    if (strcat_to(line, buffer) == 1) {
-        if (*line == NULL)
-            return -1;
-        return 1;
+    for (i = 0; buffer[i] != '\n' && buffer[i]; ++i);
+    if (buffer[i] == '\0' && i < READ_SIZE)
+        return (my_strcat(&static_temp, buffer, i));
+    else if (buffer[i] == '\n') {
+        result = my_strcat(&static_temp, buffer, i);
+        for (i = 0; *buffer && *buffer != '\n'; buffer++);
+        static_temp = NULL;;
+        static_temp = my_strcat(&static_temp, ++buffer, i);
+        return (result);
+    } else {
+        static_temp = my_strcat(&static_temp, buffer, READ_SIZE);
+        return NULL;
     }
-    return 0;
 }
 
 char *get_next_line(int fd)
 {
-    static char *buffer = NULL;
-    char *line = NULL;
-    int ret = init_gnl(&buffer, &line);
+    size_t read_tmp = 0;
+    char *check = NULL;
+    char *buffer= malloc(sizeof(char) * (READ_SIZE + 1));
 
-    if (ret == 1) {
-        return line;
-    } else if (ret == -1)
+    if (buffer == NULL || fd < 0)
         return NULL;
-    while ((ret = read(fd, buffer, READ_SIZE)) > 0) {
-        buffer[ret] = '\0';
-        ret = strcat_to(&line, &buffer);
-        if (ret == 1) {
-            break;
-        } else if (ret == -1)
+    while (check == NULL) {
+        if ((read_tmp = read(fd, buffer, READ_SIZE)) <= 0) {
+            free(buffer);
             return NULL;
+        } else {
+            buffer[READ_SIZE] = '\0';
+            check = get_str(buffer);
+        }
     }
-    return line;
+    return (check);
 }
