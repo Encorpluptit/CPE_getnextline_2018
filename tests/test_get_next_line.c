@@ -7,6 +7,8 @@
 
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "get_next_line.h"
 
 Test(fct, test_01)
@@ -97,29 +99,56 @@ Test(fct, test_07)
     int res = init_buffer(&line, &buffer);
 
     cr_assert_not_null(buffer, "resultat = %s", line);
-    cr_assert_eq(res, 0, "Resultat = %d", res);
+    cr_assert_eq(res, VALID_MALLOC, "Resultat = %d", res);
 }
-/*
+
 Test(fct, test_08)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    char *buffer = "aaa";
+    char *line = NULL;
+    int res = init_buffer(&line, &buffer);
+
+    cr_expect_not_null(buffer, "resultat = %s", buffer);
+    cr_expect_str_eq(line, "aaa", "resultat = %s", line);
+    cr_expect_eq(res, 0, "Resultat = %d", res);
 }
 
 Test(fct, test_09)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    char *buffer = "aaa\na";
+    char *line = NULL;
+    int res = init_buffer(&line, &buffer);
+
+    cr_expect_not_null(buffer, "resultat = %s", buffer);
+    cr_expect_str_eq(line, "aaa", "resultat = %s", line);
+    cr_expect_str_eq(buffer, "a", "resultat = %s", buffer);
+    cr_expect_eq(res, 1, "Resultat = %d", res);
 }
 
 Test(fct, test_10)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    char *buffer = "aaa\n";
+    char *line = NULL;
+    int res = init_buffer(&line, &buffer);
+
+    cr_expect_not_null(buffer, "resultat = %s", buffer);
+    cr_expect_str_eq(line, "aaa", "resultat = %s", line);
+    cr_expect_str_eq(buffer, "\0", "resultat = %s", buffer);
+    cr_expect_eq(res, 1, "Resultat = %d", res);
 }
 
 Test(fct, test_11)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
+    char *buffer = "aaa\0";
+    char *line = NULL;
+    int res = init_buffer(&line, &buffer);
 
+    cr_expect_not_null(buffer, "resultat = %s", buffer);
+    cr_expect_str_eq(line, "aaa", "resultat = %s", line);
+    cr_expect_str_eq(buffer, "\0", "resultat = %s", buffer);
+    cr_expect_eq(res, 0, "Resultat = %d", res);
+}
+/*
 Test(fct, test_12)
 {
     cr_assert_eq(fct(A), R, "resultat = %d", R);
@@ -142,7 +171,11 @@ Test(fct, test_15)
 
 Test(fct, test_16)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    int fd = open("tests/test_text", O_RDONLY);
+    char *res = get_next_line(fd);
+    char *result = "The file contain the following content:";
+    close(fd);
+    cr_assert_eq(res, result, "resultat = %s", res);
 }
 
 Test(fct, test_17)
@@ -162,6 +195,37 @@ Test(fct, test_19)
 }
 
 Test(fct, test_20)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+*/
+Test(fct, test_21)
+{
+    char *res = malloc(sizeof(char) * (5 + 1));
+
+    for (int i = 0; res[i]; ++i)
+        res[i] = 'a';
+    res = my_realloc(res, 9);
+    for (int i = 0; res[i]; ++i)
+        cr_assert_eq(res[i], 'a', "resultat = %c", res[i]);
+}
+/*
+Test(fct, test_22)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+
+Test(fct, test_23)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+
+Test(fct, test_24)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+
+Test(fct, test_25)
 {
     cr_assert_eq(fct(A), R, "resultat = %d", R);
 }
