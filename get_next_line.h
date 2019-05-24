@@ -5,9 +5,8 @@
 ** Re-Write the getnextline fct.
 */
 
-#ifndef __READ_SIZE__
-#define __READ_SIZE__
-#define READ_SIZE (1)
+#ifndef READ_SIZE
+#define READ_SIZE (20)
 #endif
 
 #ifndef __GET_NEXT_LINE_H__
