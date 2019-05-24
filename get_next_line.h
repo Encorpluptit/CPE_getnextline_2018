@@ -7,7 +7,7 @@
 
 #ifndef __READ_SIZE__
 #define __READ_SIZE__
-#define READ_SIZE (20)
+#define READ_SIZE (70)
 #endif
 
 #ifndef __GET_NEXT_LINE_H__
@@ -22,13 +22,8 @@
 static const int FAILED_MALLOC = -1;
 static const int VALID_MALLOC = 42;
 static const int ERROR = 84;
-static const bool END_LINE = true;
-static const bool END = false;
-
-static inline bool check_endline(char c)
-{
-    return (c == '\n');
-}
+static const int END_LINE = 1;
+static const int END = 0;
 
 char *get_next_line(int fd);
 char *my_realloc(char *ptr, size_t size);
