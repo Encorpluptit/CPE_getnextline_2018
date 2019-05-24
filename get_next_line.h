@@ -7,7 +7,7 @@
 
 #ifndef __READ_SIZE__
 #define __READ_SIZE__
-#define READ_SIZE (70)
+#define READ_SIZE (1)
 #endif
 
 #ifndef __GET_NEXT_LINE_H__
@@ -27,7 +27,7 @@ static const int END = 0;
 
 char *get_next_line(int fd);
 char *my_realloc(char *ptr, size_t size);
-int my_strcat(char **line, char **buffer);
-int init_buffer(char **buffer, char **line);
+int my_strcat(char **line, char **buffer, char **save_buffer);
+int init_buffer(char **buffer, char **line, char **save_buffer);
 
 #endif
