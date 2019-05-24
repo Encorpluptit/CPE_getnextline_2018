@@ -11,35 +11,25 @@ char *get_next_line(int fd)
 {
     static char *buffer = NULL;
     char *line = NULL;
-    //printf("buffer avant init: %s\n", buffer);
     int read_rt = init_buffer(&line, &buffer);
 
-    //printf("line after init%s\n", line);
     if (read_rt == FAILED_MALLOC || fd < 0)
         return NULL;
-    else if (read_rt == END_LINE) {
-        //printf("line after init: %s\n", line);
-        //printf("buffer after init: %s\n", buffer);
+    else if (read_rt == END_LINE)
         return (line);
+    while ((read_rt = read(fd, buffer, READ_SIZE)) > 0) {
+        buffer[read_rt] = '\0';
+        read_rt = my_strcat(&line, &buffer);
+        if (read_rt == FAILED_MALLOC)
+            return NULL;
+        if (read_rt == END_LINE)
+            break;
     }
-    else
-        while ((read_rt = read(fd, buffer, READ_SIZE)) > 0) {
-            buffer[read_rt] = '\0';
-            read_rt = my_strcat(&line, &buffer);
-            //printf("line:%s\n", line);
-            if (read_rt == FAILED_MALLOC)
-                return NULL;
-            if (read_rt == END_LINE)
-                return (line);
-//buffer = my_realloc(buffer, (sizeof(char) * (READ_SIZE + 1)));
-        }
     return (line);
 }
 
 int init_buffer(char **line, char **buffer)
 {
-    int stop = 0;
-
     if (*buffer == NULL || **buffer == '\0') {
         *buffer = malloc(sizeof(char) * (READ_SIZE + 1));
         if (*buffer == NULL)
@@ -47,12 +37,8 @@ int init_buffer(char **line, char **buffer)
         else
             return VALID_MALLOC;
     }
-    stop = my_strcat(line, buffer);
-    if (stop == END_LINE)
-        return (END_LINE);
-    return (END);
+    return (my_strcat(line, buffer));
 }
-//mettre strcat directement dans le return ?
 
 int my_strcat(char **line, char **buffer)
 {
@@ -71,13 +57,9 @@ int my_strcat(char **line, char **buffer)
     if (**buffer == '\0') {
         *buffer = NULL;
         *buffer = my_realloc(*buffer, (sizeof(char) * (READ_SIZE + 1)));
-        return (END);
     }
-    else if (**buffer == '\n') {
-        *buffer += 1;
-        return (END_LINE);
-    }
-    return (0);
+    *buffer += (**buffer == '\n' ? 1 : 0);
+    return (*buff_cpy == '\n' ? END_LINE : END);
 }
 
 char *my_realloc(char *ptr, size_t size)
