@@ -5,11 +5,11 @@
 ** Template for criterion unit test.
 */
 
+#include "get_next_line.h"
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include "get_next_line.h"
 
 Test(fct, test_01)
 {
@@ -31,10 +31,11 @@ Test(fct, test_02)
 
 Test(fct, test_03)
 {
-    char *line = "Hello ";
-    char *buffer = "World!";
-    char *str_res = "Hello World!";
-    int res = my_strcat(&line, &buffer);
+    char *line = strdup("Hello ");
+    char *buffer = strdup("World!");;
+    char *str_res = strdup("Hello World!");
+    char *save_buffer = buffer;
+    int res = my_strcat(&line, &buffer, &save_buffer);
 
     cr_assert_str_eq(line, str_res, "resultat = %s", line);
     cr_assert_eq(res, 0, "resultat = %d", res);
@@ -42,17 +43,20 @@ Test(fct, test_03)
 
 Test(fct, test_04)
 {
-    char *str1 = "Salut,";
-    char *str2 = " ça";
-    char *str3 = " va";
-    char *str4 = " les amis ?";
-    char *str_res = "Salut, ça va les amis ?";
-    int res = my_strcat(&str1, &str2);
+    char *str1 = strdup("Salut,");
+    char *str2 = strdup(" ça");
+    char *str3 = strdup(" va");
+    char *str4 = strdup(" les amis ?");
+    char *str_res = strdup("Salut, ça va les amis ?");
+    char *save_buffer = str2;
+    int res = my_strcat(&str1, &str2, &save_buffer);
 
     cr_assert_str_eq(str1, "Salut, ça", "resultat = %s", str1);
     cr_assert_eq(res, 0, "resultat = %d", res);
-    res = my_strcat(&str1, &str3);
-    res = my_strcat(&str1, &str4);
+    save_buffer = str3;
+    res = my_strcat(&str1, &str3, &save_buffer);
+    save_buffer = str4;
+    res = my_strcat(&str1, &str4, &save_buffer);
     cr_assert_str_eq(str1, str_res, "resultat = %s", str1);
     cr_assert_eq(res, 0, "resultat = %d", res);
 }
@@ -60,15 +64,20 @@ Test(fct, test_04)
 Test(fct, test_05)
 {
     char *line = NULL;
-    char *str1 = "Salut,";
-    char *str2 = " ça";
-    char *str3 = " va";
-    char *str4 = " les amis ?";
-    char *str_res = "Salut, ça va les amis ?";
-    int res = my_strcat(&line, &str1);
-    res = my_strcat(&line, &str2);
-    res = my_strcat(&line, &str3);
-    res = my_strcat(&line, &str4);
+    char *str1 = strdup("Salut,");
+    char *str2 = strdup(" ça");
+    char *str3 = strdup(" va");
+    char *str4 = strdup(" les amis ?");
+    char *str_res = strdup("Salut, ça va les amis ?");
+    char *save_buffer = str1;
+    int res = my_strcat(&line, &str1, &save_buffer);
+
+    save_buffer = str2;
+    res = my_strcat(&line, &str2, &save_buffer);
+    save_buffer = str3;
+    res = my_strcat(&line, &str3, &save_buffer);
+    save_buffer = str4;
+    res = my_strcat(&line, &str4, &save_buffer);
     cr_assert_str_eq(line, str_res, "resultat = %s", line);
     cr_assert_eq(res, 0, "resultat = %d", res);
 }
@@ -76,18 +85,23 @@ Test(fct, test_05)
 Test(fct, test_06)
 {
     char *line = NULL;
-    char *str1 = "Salut,";
-    char *str2 = " ça";
-    char *str3 = " va";
-    char *str4 = " les amis";
+    char *str1 = strdup("Salut,");
+    char *str2 = strdup(" ça");
+    char *str3 = strdup(" va");
+    char *str4 = strdup(" les amis");
     char *str5 = " ?\nCoucou";
-    char *str_res = "Salut, ça va les amis ?";
-    int res = my_strcat(&line, &str1);
+    char *str_res = strdup("Salut, ça va les amis ?");
+    char *save_buffer = str1;
+    int res = my_strcat(&line, &str1, &save_buffer);
 
-    res = my_strcat(&line, &str2);
-    res = my_strcat(&line, &str3);
-    res = my_strcat(&line, &str4);
-    res = my_strcat(&line, &str5);
+    save_buffer = str2;
+    res = my_strcat(&line, &str2, &save_buffer);
+    save_buffer = str3;
+    res = my_strcat(&line, &str3, &save_buffer);
+    save_buffer = str4;
+    res = my_strcat(&line, &str4, &save_buffer);
+    save_buffer = str5;
+    res = my_strcat(&line, &str5, &save_buffer);
     cr_assert_str_eq(line, str_res, "resultat = %s", line);
     cr_assert_eq(res, 1, "resultat = %d", res);
 }
@@ -96,19 +110,23 @@ Test(fct, test_07)
 {
     char *buffer = NULL;
     char *line = NULL;
-    int res = init_buffer(&line, &buffer);
+    char *save_buffer = buffer;
+    int res = init_buffer(&line, &buffer, &save_buffer);
 
-    cr_assert_not_null(buffer, "resultat = %s", line);
+    cr_assert_not_null(buffer, "resultat = %s", buffer);
+    cr_assert_not_null(save_buffer, "resultat = %s", save_buffer);
     cr_assert_eq(res, VALID_MALLOC, "Resultat = %d", res);
 }
 
 Test(fct, test_08)
 {
-    char *buffer = "aaa";
+    char *buffer = strdup("aaa");
     char *line = NULL;
-    int res = init_buffer(&line, &buffer);
+    char *save_buffer = buffer;
+    int res = init_buffer(&line, &buffer, &save_buffer);
 
     cr_expect_not_null(buffer, "resultat = %s", buffer);
+    cr_assert_not_null(save_buffer, "resultat = %s", save_buffer);
     cr_expect_str_eq(line, "aaa", "resultat = %s", line);
     cr_expect_eq(res, 0, "Resultat = %d", res);
 }
@@ -117,7 +135,8 @@ Test(fct, test_09)
 {
     char *buffer = "aaa\na";
     char *line = NULL;
-    int res = init_buffer(&line, &buffer);
+    char *save_buffer = buffer;
+    int res = init_buffer(&line, &buffer, &save_buffer);
 
     cr_expect_not_null(buffer, "resultat = %s", buffer);
     cr_expect_str_eq(line, "aaa", "resultat = %s", line);
@@ -129,7 +148,8 @@ Test(fct, test_10)
 {
     char *buffer = "aaa\n";
     char *line = NULL;
-    int res = init_buffer(&line, &buffer);
+    char *save_buffer = buffer;
+    int res = init_buffer(&line, &buffer, &save_buffer);
 
     cr_expect_not_null(buffer, "resultat = %s", buffer);
     cr_expect_str_eq(line, "aaa", "resultat = %s", line);
@@ -139,45 +159,74 @@ Test(fct, test_10)
 
 Test(fct, test_11)
 {
-    char *buffer = "aaa\0";
+    char *buffer = strdup("aaa\0");
     char *line = NULL;
-    int res = init_buffer(&line, &buffer);
+    char *save_buffer = buffer;
+    int res = init_buffer(&line, &buffer, &save_buffer);
 
     cr_expect_not_null(buffer, "resultat = %s", buffer);
     cr_expect_str_eq(line, "aaa", "resultat = %s", line);
     cr_expect_str_eq(buffer, "\0", "resultat = %s", buffer);
     cr_expect_eq(res, 0, "Resultat = %d", res);
 }
-/*
+
 Test(fct, test_12)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    char *res = calloc(sizeof(char), (5 + 1));
+
+    for (int i = 0; i < 5; ++i)
+        res[i] = 'a';
+    res = my_realloc(res, 7);
+    cr_assert_eq(res[0], 'a', "resultat = %s", res);
+    cr_assert_eq(res[1], 'a', "resultat = %c", res[1]);
+    cr_assert_eq(res[2], 'a', "resultat = %c", res[2]);
+    cr_assert_eq(res[3], 'a', "resultat = %c", res[3]);
+    cr_assert_eq(res[4], 'a', "resultat = %c", res[4]);
+    cr_assert_eq(res[5], '\0', "resultat = %c", res[5]);
 }
 
 Test(fct, test_13)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    int fd = -1;
+    char *res = get_next_line(-1);
+
+    cr_assert_null(res, "resultat = %s", res);
 }
 
 Test(fct, test_14)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    int fd = open("tests/test_text", O_RDONLY);
+    char *res = get_next_line(fd);
+    char *result = "Confidence is so overrated.";
+
+    res =get_next_line(fd);
+    close(fd);
+    cr_assert_str_eq(res, result, "resultat = %s", res);
 }
 
 Test(fct, test_15)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
+    int fd = open("tests/test_text", O_RDONLY);
+    char *res = get_next_line(fd);
+    char *result = "It's when we're most uncomfortable and in desparate \
+need of an answer that we growthe most.";
+
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    close(fd);
+    cr_assert_str_eq(res, result, "resultat = %s", res);
 }
 
 Test(fct, test_16)
 {
     int fd = open("tests/test_text", O_RDONLY);
-    char *res = get_next_line(fd);
     char *result = "The file contain the following content:";
-    close(fd);
-    cr_assert_eq(res, result, "resultat = %s", res);
-}
+    char *res = get_next_line(fd);
 
+    close(fd);
+    cr_assert_str_eq(res, result, "resultat = %s", res);
+}
+/*
 Test(fct, test_17)
 {
     cr_assert_eq(fct(A), R, "resultat = %d", R);
