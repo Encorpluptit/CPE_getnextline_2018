@@ -29,6 +29,27 @@ Test(failed_malloc_init_buffer, test_02)
     char *save_buffer = buffer;
     int res = init_buffer(&line, &buffer, &save_buffer);
 
-    cr_assert_null(buffer, "resultat = %s", res);
+    cr_assert_null(buffer, "resultat = %s", buffer);
     cr_assert_eq(res, FAILED_MALLOC);
+}
+
+Test(failed_malloc_str_cat, test_03)
+{
+    char *line = NULL;
+    char *buffer = strdup("coucou\net toi\nas");
+    char *buffer2 = strdup("coucou\net toi\nas");
+    char *save_buffer = buffer;
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_str_eq(buffer, buffer2, "resultat = %s", buffer);
+    cr_assert_eq(res, FAILED_MALLOC);
+}
+
+Test(failed_malloc_my_realloc, test_04)
+{
+    char *str = strdup("coucou\net toi\nas");
+    char *res = str;
+    str = my_realloc(str, 80);
+
+    cr_assert_null(str, "resultat = %s", str);
 }

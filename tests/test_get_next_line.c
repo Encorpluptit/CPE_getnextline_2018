@@ -32,7 +32,7 @@ Test(fct, test_02)
 Test(fct, test_03)
 {
     char *line = strdup("Hello ");
-    char *buffer = strdup("World!");;
+    char *buffer = strdup("World!");
     char *str_res = strdup("Hello World!");
     char *save_buffer = buffer;
     int res = my_strcat(&line, &buffer, &save_buffer);
@@ -211,8 +211,8 @@ Test(fct, test_15)
     char *result = "It's when we're most uncomfortable and in desparate \
 need of an answer that we growthe most.";
 
-    res =get_next_line(fd);
-    res =get_next_line(fd);
+    res = get_next_line(fd);
+    res = get_next_line(fd);
     close(fd);
     cr_assert_str_eq(res, result, "resultat = %s", res);
 }
@@ -226,12 +226,27 @@ Test(fct, test_16)
     close(fd);
     cr_assert_str_eq(res, result, "resultat = %s", res);
 }
-/*
+
 Test(fct, test_17)
 {
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
+    int fd = open("tests/test_endline", O_RDONLY);
+    char *res = get_next_line(fd);
 
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    res =get_next_line(fd);
+    close(fd);
+    cr_assert_null(res, "resultat = %s", res);
+}
+/*
 Test(fct, test_18)
 {
     cr_assert_eq(fct(A), R, "resultat = %d", R);

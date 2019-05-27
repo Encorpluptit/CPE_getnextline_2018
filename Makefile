@@ -32,7 +32,7 @@ EXEC	=	get_next_line
 
 CFLAGS	+=	-W -Wall -Wextra -Wshadow -std=c99 -pedantic -Werror
 
-CPPFLAGS	+=	-iquote . -I./tests
+CPPFLAGS	+=	-iquote .
 
 TESTS_NAME	=	unit_tests
 
