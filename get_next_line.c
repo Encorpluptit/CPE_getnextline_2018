@@ -5,7 +5,6 @@
 ** Reprocduce the get_next_line function behavior.
 */
 
-#include "tests/wrap_malloc.h"
 #include "get_next_line.h"
 
 char *get_next_line(int fd)

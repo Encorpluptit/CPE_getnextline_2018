@@ -246,23 +246,7 @@ Test(fct, test_17)
     close(fd);
     cr_assert_null(res, "resultat = %s", res);
 }
-/*
-Test(fct, test_18)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
 
-}
-
-Test(fct, test_19)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-
-Test(fct, test_20)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-*/
 Test(fct, test_21)
 {
     char *res = malloc(sizeof(char) * (5 + 1));
@@ -273,24 +257,3 @@ Test(fct, test_21)
     for (int i = 0; res[i]; ++i)
         cr_assert_eq(res[i], 'a', "resultat = %c", res[i]);
 }
-/*
-Test(fct, test_22)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-
-Test(fct, test_23)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-
-Test(fct, test_24)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-
-Test(fct, test_25)
-{
-    cr_assert_eq(fct(A), R, "resultat = %d", R);
-}
-*/
