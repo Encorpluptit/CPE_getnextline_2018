@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <stdbool.h>
 
+int my_putstr(char const *str);
+
 static const int FAILED_MALLOC = -1;
 static const int VALID_MALLOC = 42;
 static const int ERROR = 84;

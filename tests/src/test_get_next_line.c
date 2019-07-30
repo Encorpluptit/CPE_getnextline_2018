@@ -5,6 +5,7 @@
 ** Template for criterion unit test.
 */
 
+#include <string.h>
 #include "get_next_line.h"
 #include <criterion/criterion.h>
 #include <criterion/redirect.h>
@@ -32,7 +33,7 @@ Test(fct, test_02)
 Test(fct, test_03)
 {
     char *line = strdup("Hello ");
-    char *buffer = strdup("World!");
+    char *buffer = strdup("World!");;
     char *str_res = strdup("Hello World!");
     char *save_buffer = buffer;
     int res = my_strcat(&line, &buffer, &save_buffer);
@@ -188,14 +189,14 @@ Test(fct, test_12)
 Test(fct, test_13)
 {
     int fd = -1;
-    char *res = get_next_line(-1);
+    char *res = get_next_line(fd);
 
     cr_assert_null(res, "resultat = %s", res);
 }
 
 Test(fct, test_14)
 {
-    int fd = open("tests/test_text", O_RDONLY);
+    int fd = open("tests/ressources/test_text", O_RDONLY);
     char *res = get_next_line(fd);
     char *result = "Confidence is so overrated.";
 
@@ -206,7 +207,7 @@ Test(fct, test_14)
 
 Test(fct, test_15)
 {
-    int fd = open("tests/test_text", O_RDONLY);
+    int fd = open("tests/ressources/test_text", O_RDONLY);
     char *res = get_next_line(fd);
     char *result = "It's when we're most uncomfortable and in desparate \
 need of an answer that we growthe most.";
@@ -219,7 +220,7 @@ need of an answer that we growthe most.";
 
 Test(fct, test_16)
 {
-    int fd = open("tests/test_text", O_RDONLY);
+    int fd = open("tests/ressources/test_text", O_RDONLY);
     char *result = "The file contain the following content:";
     char *res = get_next_line(fd);
 
@@ -229,22 +230,49 @@ Test(fct, test_16)
 
 Test(fct, test_17)
 {
-    int fd = open("tests/test_endline", O_RDONLY);
+    int fd = open("tests/ressources/test_endline", O_RDONLY);
     char *res = get_next_line(fd);
 
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
-    res =get_next_line(fd);
+    while (res)
+        res = get_next_line(fd);
     close(fd);
     cr_assert_null(res, "resultat = %s", res);
+}
+
+Test(fct, test_18)
+{
+    char *buffer = strdup("ca va ?");
+    char *line = strdup("Coucou ");
+    char *save_buffer = buffer;
+    char *result = strdup("Coucou ca va ?");
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_eq(res, 0, "strcat_returncode = %d\n", res);
+    cr_assert_str_eq(line, result, "resultat = %s", line);
+}
+
+Test(fct, test_19)
+{
+    char *buffer = strdup("ca va ?\n");
+    char *line = strdup("Coucou ");
+    char *save_buffer = buffer;
+    char *result = strdup("Coucou ca va ?");
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_eq(res, END_LINE, "strcat_returncode = %d\n", res);
+    cr_assert_str_eq(line, result, "resultat = %s", line);
+}
+
+Test(fct, test_20)
+{
+    char *buffer = strdup("ca va ?\nva ?");
+    char *line = strdup("Coucou ");
+    char *save_buffer = buffer;
+    char *result = strdup("Coucou ca va ?");
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_eq(res, END_LINE, "strcat_returncode = %d\n", res);
+    cr_assert_str_eq(line, result, "resultat = %s", line);
 }
 
 Test(fct, test_21)
@@ -257,3 +285,38 @@ Test(fct, test_21)
     for (int i = 0; res[i]; ++i)
         cr_assert_eq(res[i], 'a', "resultat = %c", res[i]);
 }
+
+Test(fct, test_22)
+{
+    char *buffer = strdup("\n");
+    char *line = strdup("Coucou ");
+    char *save_buffer = buffer;
+    char *result = strdup("Coucou ");
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_eq(res, END_LINE, "strcat_returncode = %d\n", res);
+    cr_assert_str_eq(line, result, "resultat = %s", line);
+}
+
+Test(fct, test_23)
+{
+    char *buffer = strdup("brother");
+    char *line = strdup("hey ");
+    char *save_buffer = buffer;
+    char *result = strdup("hey brother");
+    int res = my_strcat(&line, &buffer, &save_buffer);
+
+    cr_assert_eq(res, END, "strcat_returncode = %d\n", res);
+    cr_assert_str_eq(line, result, "resultat = %s", line);
+}
+/*
+Test(fct, test_24)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+
+Test(fct, test_25)
+{
+    cr_assert_eq(fct(A), R, "resultat = %d", R);
+}
+*/
